@@ -6,6 +6,9 @@ ControlP5 cp5;
 
 RadioButton rAlign;
 
+public static final int[] ENTER = {10, 13};
+public static final int BACKSPACE = 8;
+
 int letterHeight = 50;
 int oldLetterHeight = 0;
 int letterWidth = 44;
@@ -19,7 +22,7 @@ int oldRow = -1;
 
 int charCountInRow = 0;
 
-HashMap<Integer, ArrayList> charsInRow = new HashMap<Integer, ArrayList>();
+HashMap<Integer, ArrayList> rows = new HashMap<Integer, ArrayList>();
 
 Align align;
 
@@ -84,6 +87,8 @@ void setup() {
     .setColorForeground(color(69, 69, 69))
     .setColorActive(color(56, 56, 56));
 
+  rows.put(row, new ArrayList());
+
   for (int i = 0; i < numChars; i++) {
     keyArray[i] = loadShape(i + ".svg");
   }
@@ -105,119 +110,146 @@ void draw() {
   if (savePDF) {
     beginRecord(PDF, "documents/nice.pdf");
   }
+  
   background(255);
   char letter;
   int charCount = input.length();
+  int rowCount = rows.containsKey(row) ? rows.size() : 0;
   int maxCharsInRow = parseInt((width-(documentPadding*2)) / letterWidth);
   int currentRowWidth = 0;
   int c=0;
   int keyIndex;
   int keyValue;
-  row=0;
 
   y = 0;
   
-  charsInRow.put(0, new ArrayList());
+  println("---------------------------");
+  println("ROW COUNT " + rowCount);
+  // Loop through rows
+  for(int i=0; i<rowCount; i++) {
+    println("FIRST LOOP " + i + " " + rows.get(i));
+    // Loop through characters in specific row
+    for(int j=0; j<rows.get(i).size(); j++) {
+      keyValue = (int)rows.get(i).get(j);
+      println("SECOND LOOP " + i + " " + j + " " + keyValue);
+    }
+  }
 
     println("---------------------------");
-  for (int i=0; i<charCount; i++) {
-    letter = input.charAt(i);
-    keyValue = parseInt(letter);
+  //for (int i=0; i<charCount; i++) {
+  //  letter = input.charAt(i);
+  //  keyValue = parseInt(letter);
     
-    if(
-      keyValue == 10 ||
-      (
-        i%maxCharsInRow == 0 &&
-        i != 0
-      )
-    ) {
-      row++;
-      c=0;
-    }
+  //  if(
+  //    keyValue == 10 ||
+  //    (
+  //      i%maxCharsInRow == 0 &&
+  //      i != 0
+  //    )
+  //  ) {
+  //    row++;
+  //    c=0;
+  //  }
     
-    println("OLD ROW " + oldRow);
-    println(" MODULO " + (i%maxCharsInRow) + charsInRow.get(row) + " - ROW: "+ row +" - CHAR COUNT IN ROW: "+ charCountInRow + " - C: "+c+" CHAR COUNT " + charCount + " MAX CHAR " + maxCharsInRow);  
+  //  println("OLD ROW " + oldRow);
+  //  println(" MODULO " + (i%maxCharsInRow) + rows.get(row) + " - ROW: "+ row +" - CHAR COUNT IN ROW: "+ charCountInRow + " - C: "+c+" CHAR COUNT " + charCount + " MAX CHAR " + maxCharsInRow);  
 
-    if (align==Align.RIGHT) {
-      x = (letterWidth*c) + (width-(charCountInRow*letterWidth+documentPadding));
-      println(align);
-      println("X " + x + " -- " + (letterWidth*c) + " -- " + (width-(letterWidth+documentPadding)) + " WIDTH " + width);
-    } else if (align==Align.CENTER) {
+  //  if (align==Align.RIGHT) {
+  //    x = (letterWidth*c) + (width-(charCountInRow*letterWidth+documentPadding));
+  //    println(align);
+  //    println("X " + x + " -- " + (letterWidth*c) + " -- " + (width-(letterWidth+documentPadding)) + " WIDTH " + width);
+  //  } else if (align==Align.CENTER) {
 
-      //if(charCount>maxCharsInRow){charCountInRow=maxCharsInRow;}
+  //    //if(charCount>maxCharsInRow){charCountInRow=maxCharsInRow;}
 
-      currentRowWidth = (charCountInRow*letterWidth/2);
-      x = ((width/2)-(currentRowWidth))+(c*letterWidth);
-    } else {
-      x = (letterWidth*c)+documentPadding;
-    }
+  //    currentRowWidth = (charCountInRow*letterWidth/2);
+  //    x = ((width/2)-(currentRowWidth))+(c*letterWidth);
+  //  } else {
+  //    x = (letterWidth*c)+documentPadding;
+  //  }
 
 
-    if (letter <= 'Z') {
-      keyIndex = int(letter)-'A';
-    } else {
-      keyIndex = int(letter)-'a';
-    }
+  //  if (letter <= 'Z') {
+  //    keyIndex = int(letter)-'A';
+  //  } else {
+  //    keyIndex = int(letter)-'a';
+  //  }
 
-    //dont draw shape if letter is whitespace or return
-    if (
-      keyValue!=32 &&
-      keyValue!=10
-      ) {
-      shape(keyArray[keyIndex], x, y+documentPadding, letterWidth, letterWidth);
-    }
+  //  //dont draw shape if letter is whitespace or return
+  //  if (
+  //    keyValue!=32 &&
+  //    keyValue!=10
+  //    ) {
+  //    shape(keyArray[keyIndex], x, y+documentPadding, letterWidth, letterWidth);
+  //  }
+  
+  //  c++;
+  //  if (((c+1)*letterWidth)>(width-(documentPadding*2)) || keyValue==10) {
+  //    y+=letterSpacing;
+  //    c=0;
+  //  }
+  //}
 
-    oldLetterSpacing = letterSpacing;
-    oldLetterWidth = letterWidth;
-    oldRow = row;
-    if (i == charCount-1) {
-      changed = false;
-    }
-
-    c++;
-    if (((c+1)*letterWidth)>(width-(documentPadding*2)) || keyValue==10) {
-      y+=letterSpacing;
-      //row++;
-      c=0;
-    }
-  }
-
-  if (savePDF == true) {
-    endRecord();
-    savePDF = false;
-  }
+  //if (savePDF == true) {
+  //  endRecord();
+  //  savePDF = false;
+  //}
+  
+  oldLetterSpacing = letterSpacing;
+  oldLetterWidth = letterWidth;
+  oldRow = row;
+  //if (i == charCount-1) {
+  //  changed = false;
+  //}
+  changed = false;
 }
 
 void keyPressed() {
+  int keyCode = parseInt(key);
   changed = true;
   
-  println("ROW " + row);
-  if(row != oldRow) {
-    charsInRow.put(row, new ArrayList()); 
+  println("KEY PRESSED START - ROW " + row);
+  println("KEY PRESSED START - ROWS " + rows + " KEY " + key + " KEY CODE " + keyCode + " INT KEY " + parseInt(key));
+
+  // New Line (Enter)
+  if(
+    keyCode == ENTER[0] ||
+    keyCode == ENTER[1]
+  ) {
+    row++;
+    rows.put(row, new ArrayList());
   }
   
-  println("KEY PRESSED" + charsInRow + " " + key);
-
+  ArrayList charsInRow = rows.get(row);
+  charCountInRow = charsInRow.size();
+  
+  // Remove Element (Backspace)
+  if (keyCode == BACKSPACE) {
+    if (
+      row >= 0 &&
+      charCountInRow > 0
+    ) {
+      charsInRow.remove(charCountInRow - 1);
+    } else if (
+      row > 0 &&
+      charCountInRow == 0
+    ) {
+      rows.remove(row);
+      row--;
+    }
+    println("BACKSPACE CHAR COUNT IN ROW " + charCountInRow);
+  }
+  
+  // Add key to array
   if ((key >= 'A' && key <= 'Z') || (key >= 'a' && key <= 'z')) {
-    charsInRow.get(row).add(key);
-    input += key;
+    charsInRow.add(keyCode);
   }
   if (key == ' ') {
-    charsInRow.get(row).add(key);
+    charsInRow.add(keyCode);
     input += key;
   }
-  if (key == RETURN || key == ENTER) {
-    charsInRow.get(row).add(key);
-    input+="\n";
-  }
-  if (keyCode == BACKSPACE) {
-    if (input.length()>0) {
-      //charsInRow.get(row).remove(charCountInRow-1);
-      input = input.substring(0, input.length()-1);
-    }
-  }
   
-  charCountInRow = charsInRow.get(row).size();
+  println("KEY PRESSED END - ROW " + row + " ROWS " + rows);
 }
 
 void radioButton(int a) {
