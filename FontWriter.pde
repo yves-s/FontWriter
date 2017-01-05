@@ -8,6 +8,9 @@ RadioButton rAlign;
 
 public static final int[] ENTER = {10, 13};
 public static final int BACKSPACE = 8;
+public static final int A = 65;
+public static final int Z = 90;
+public static final int SPACE = 32;
 
 int maxCharsInRow;
 int letterHeight = 50;
@@ -91,6 +94,9 @@ void setup() {
   rows.put(row, new ArrayList());
 }
 
+int rowCount;
+int keyValue;
+
 void draw() {
   if(
     letterWidth != oldLetterWidth ||
@@ -109,14 +115,9 @@ void draw() {
   }
   
   background(255);
-  char letter;
-  int charCount = input.length();
-  int rowCount = rows.containsKey(row) ? rows.size() : 0;
+  
+  rowCount = rows.containsKey(row) ? rows.size() : 0;
   maxCharsInRow = parseInt((width-(documentPadding*2)) / letterWidth);
-  int currentRowWidth = 0;
-  int c=0;
-  int keyIndex;
-  int keyValue;
   
   println("---------------------------");
   
@@ -127,36 +128,17 @@ void draw() {
     for(int j=0; j<rows.get(i).size(); j++) {
       
       keyValue = (int)rows.get(i).get(j);
-      x = (letterWidth*c)+documentPadding;
+      x = (letterWidth*j)+documentPadding;
       
-      shape(loadShape(keyValue + ".svg"), x, (i*letterSpacing)+documentPadding, letterWidth, letterWidth);
-      
-      c++;
+      if(keyValue != SPACE) {
+        shape(loadShape(keyValue + ".svg"), x, (i*letterSpacing)+documentPadding, letterWidth, letterWidth);
+      }
       
     }
     
-    c = 0;
-    
   }
 
-    println("---------------------------");
-  //for (int i=0; i<charCount; i++) {
-  //  letter = input.charAt(i);
-  //  keyValue = parseInt(letter);
-    
-  //  if(
-  //    keyValue == 10 ||
-  //    (
-  //      i%maxCharsInRow == 0 &&
-  //      i != 0
-  //    )
-  //  ) {
-  //    row++;
-  //    c=0;
-  //  }
-    
-  //  println("OLD ROW " + oldRow);
-  //  println(" MODULO " + (i%maxCharsInRow) + rows.get(row) + " - ROW: "+ row +" - CHAR COUNT IN ROW: "+ charCountInRow + " - C: "+c+" CHAR COUNT " + charCount + " MAX CHAR " + maxCharsInRow);  
+  //for (int i=0; i<charCount; i++) {  
 
   //  if (align==Align.RIGHT) {
   //    x = (letterWidth*c) + (width-(charCountInRow*letterWidth+documentPadding));
@@ -194,17 +176,14 @@ void draw() {
   //  }
   //}
 
-  //if (savePDF == true) {
-  //  endRecord();
-  //  savePDF = false;
-  //}
+  if (savePDF == true) {
+    endRecord();
+    savePDF = false;
+  }
   
   oldLetterSpacing = letterSpacing;
   oldLetterWidth = letterWidth;
   oldRow = row;
-  //if (i == charCount-1) {
-  //  changed = false;
-  //}
   changed = false;
 }
 
@@ -212,24 +191,24 @@ void keyPressed() {
   //int keyCode = parseInt(key);
   changed = true;
   
-  println("KEY PRESSED START - ROW " + row);
-  println("KEY PRESSED START - ROWS " + rows + " KEY " + key + " KEY CODE " + keyCode + " INT KEY " + parseInt(key));
-  
-  ArrayList charsInRow = rows.get(row);
-  charCountInRow = charsInRow.size();
+  charCountInRow = rows.get(row).size();
 
   // New Line (Enter)
+  // If Enter get's hit or char-count hits max-chars-in-row
   if(
     keyCode == ENTER[0] ||
     keyCode == ENTER[1] ||
-    charCountInRow == maxCharsInRow 
+    (
+      charCountInRow == maxCharsInRow &&
+      keyCode != BACKSPACE
+    )
   ) {
     row++;
     rows.put(row, new ArrayList());
   }
   
-  // Gets overwritten because row could be increased
-  charsInRow = rows.get(row);
+  // `charCountInRow` gets overwritten because row could be increased
+  ArrayList charsInRow = rows.get(row);
   charCountInRow = charsInRow.size();
   
   // Remove Element (Backspace)
@@ -246,19 +225,24 @@ void keyPressed() {
       rows.remove(row);
       row--;
     }
-    println("BACKSPACE CHAR COUNT IN ROW " + charCountInRow);
   }
   
+  println(keyCode);
+  
   // Add key to array
-  if ((key >= 'A' && key <= 'Z') || (key >= 'a' && key <= 'z')) {
+  if ((keyCode >= A && keyCode <= Z) /*|| (key >= 'a' && key <= 'z')*/) {
     charsInRow.add(keyCode);
   }
-  if (key == ' ') {
+  if (keyCode == SPACE) {
     charsInRow.add(keyCode);
     input += key;
   }
   
   println("KEY PRESSED END - ROW " + row + " ROWS " + rows);
+}
+
+public int handleAlignment(String align) {
+  return 0;
 }
 
 void radioButton(int a) {
