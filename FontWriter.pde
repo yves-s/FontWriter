@@ -9,6 +9,7 @@ RadioButton rAlign;
 public static final int[] ENTER = {10, 13};
 public static final int BACKSPACE = 8;
 
+int maxCharsInRow;
 int letterHeight = 50;
 int oldLetterHeight = 0;
 int letterWidth = 44;
@@ -88,10 +89,6 @@ void setup() {
     .setColorActive(color(56, 56, 56));
 
   rows.put(row, new ArrayList());
-
-  for (int i = 0; i < numChars; i++) {
-    keyArray[i] = loadShape(i + ".svg");
-  }
 }
 
 void draw() {
@@ -115,24 +112,31 @@ void draw() {
   char letter;
   int charCount = input.length();
   int rowCount = rows.containsKey(row) ? rows.size() : 0;
-  int maxCharsInRow = parseInt((width-(documentPadding*2)) / letterWidth);
+  maxCharsInRow = parseInt((width-(documentPadding*2)) / letterWidth);
   int currentRowWidth = 0;
   int c=0;
   int keyIndex;
   int keyValue;
-
-  y = 0;
   
   println("---------------------------");
-  println("ROW COUNT " + rowCount);
+  
   // Loop through rows
   for(int i=0; i<rowCount; i++) {
-    println("FIRST LOOP " + i + " " + rows.get(i));
+    
     // Loop through characters in specific row
     for(int j=0; j<rows.get(i).size(); j++) {
+      
       keyValue = (int)rows.get(i).get(j);
-      println("SECOND LOOP " + i + " " + j + " " + keyValue);
+      x = (letterWidth*c)+documentPadding;
+      
+      shape(loadShape(keyValue + ".svg"), x, (i*letterSpacing)+documentPadding, letterWidth, letterWidth);
+      
+      c++;
+      
     }
+    
+    c = 0;
+    
   }
 
     println("---------------------------");
@@ -205,22 +209,27 @@ void draw() {
 }
 
 void keyPressed() {
-  int keyCode = parseInt(key);
+  //int keyCode = parseInt(key);
   changed = true;
   
   println("KEY PRESSED START - ROW " + row);
   println("KEY PRESSED START - ROWS " + rows + " KEY " + key + " KEY CODE " + keyCode + " INT KEY " + parseInt(key));
+  
+  ArrayList charsInRow = rows.get(row);
+  charCountInRow = charsInRow.size();
 
   // New Line (Enter)
   if(
     keyCode == ENTER[0] ||
-    keyCode == ENTER[1]
+    keyCode == ENTER[1] ||
+    charCountInRow == maxCharsInRow 
   ) {
     row++;
     rows.put(row, new ArrayList());
   }
   
-  ArrayList charsInRow = rows.get(row);
+  // Gets overwritten because row could be increased
+  charsInRow = rows.get(row);
   charCountInRow = charsInRow.size();
   
   // Remove Element (Backspace)
