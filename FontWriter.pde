@@ -120,6 +120,7 @@ void draw() {
   // Loop through rows
   for(int i=0; i<rowCount; i++) {
     
+    charCountInRow = rows.get(i).size();
     // Loop through characters in specific row
     for(int j=0; j<rows.get(i).size(); j++) {
       
@@ -187,7 +188,7 @@ void draw() {
 public int handleAlignment(int charPos, Align align) {
   switch(align) {
     case RIGHT:
-      return 0;
+      return (letterWidth*charPos)+(width-(charCountInRow*letterWidth+documentPadding));
     case CENTER:
       return 0;
     case LEFT:
@@ -199,8 +200,6 @@ public int handleAlignment(int charPos, Align align) {
 public void keyPressed() {
   //int keyCode = parseInt(key);
   changed = true;
-  
-  charCountInRow = rows.get(row).size();
 
   // New Line (Enter)
   // If Enter get's hit or char-count hits max-chars-in-row
@@ -216,7 +215,6 @@ public void keyPressed() {
     rows.put(row, new ArrayList());
   }
   
-  // `charCountInRow` gets overwritten because row could be increased
   ArrayList charsInRow = rows.get(row);
   charCountInRow = charsInRow.size();
   
