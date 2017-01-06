@@ -3,8 +3,8 @@ import controlP5.*;
 import java.util.Map;
 
 ControlP5 cp5;
-
 RadioButton rAlign;
+Align align;
 
 public static final int[] ENTER = {10, 13};
 public static final int BACKSPACE = 8;
@@ -20,15 +20,11 @@ int oldLetterWidth = 0;
 int documentPadding = 20;
 float letterSpacing = letterHeight+letterHeight/5;
 float oldLetterSpacing = 0;
-
 int row = 0;
 int oldRow = -1;
-
 int charCountInRow = 0;
 
 HashMap<Integer, ArrayList> rows = new HashMap<Integer, ArrayList>();
-
-Align align;
 
 int x = -letterWidth;
 int y = 0;
@@ -50,7 +46,7 @@ void setup() {
   background(255);
 
   cp5 = new ControlP5(this);
-  //align=Align.RIGHT;
+  align=Align.LEFT;
 
   cp5.addSlider("letterWidth")
     .setPosition(10, height-30)
@@ -128,7 +124,8 @@ void draw() {
     for(int j=0; j<rows.get(i).size(); j++) {
       
       keyValue = (int)rows.get(i).get(j);
-      x = (letterWidth*j)+documentPadding;
+      
+      x = handleAlignment(j, align);
       
       if(keyValue != SPACE) {
         shape(loadShape(keyValue + ".svg"), x, (i*letterSpacing)+documentPadding, letterWidth, letterWidth);
@@ -187,7 +184,19 @@ void draw() {
   changed = false;
 }
 
-void keyPressed() {
+public int handleAlignment(int charPos, Align align) {
+  switch(align) {
+    case RIGHT:
+      return 0;
+    case CENTER:
+      return 0;
+    case LEFT:
+      return (letterWidth*charPos)+documentPadding;
+  }
+  return 0;
+}
+
+public void keyPressed() {
   //int keyCode = parseInt(key);
   changed = true;
   
@@ -227,39 +236,40 @@ void keyPressed() {
     }
   }
   
-  println(keyCode);
-  
   // Add key to array
-  if ((keyCode >= A && keyCode <= Z) /*|| (key >= 'a' && key <= 'z')*/) {
+  /*
+    key >= 'a' && key <= 'z'
+  */
+  if (
+    keyCode == SPACE ||
+    (
+      keyCode >= A &&
+      keyCode <= Z
+    )
+  ) {
     charsInRow.add(keyCode);
-  }
-  if (keyCode == SPACE) {
-    charsInRow.add(keyCode);
-    input += key;
   }
   
   println("KEY PRESSED END - ROW " + row + " ROWS " + rows);
 }
 
-public int handleAlignment(String align) {
-  return 0;
-}
-
-void radioButton(int a) {
+public void radioButton(int a) {
   changed = true;
 
   if (a>0) {
+    
     switch(a) {
-    case 2: 
-      align = Align.CENTER;
-      break;
-    case 3:
-      align = Align.RIGHT;
-      break;
-    default:
-      align = Align.LEFT;
-      break;
+      case 2: 
+        align = Align.CENTER;
+        break;
+      case 3:
+        align = Align.RIGHT;
+        break;
+      default:
+        align = Align.LEFT;
+        break;
     }
+    
   }
 }
 
