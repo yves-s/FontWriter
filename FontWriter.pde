@@ -23,6 +23,7 @@ float oldLetterSpacing = 0;
 int row = 0;
 int oldRow = -1;
 int charCountInRow = 0;
+int currentRowWidth;
 
 HashMap<Integer, ArrayList> rows = new HashMap<Integer, ArrayList>();
 
@@ -32,11 +33,6 @@ int y = 0;
 boolean newletter;
 boolean savePDF = false;
 boolean changed = true;
-
-int numChars = 26;
-PShape[] keyArray = new PShape[numChars];
-//String input = "d \nq";
-String input = "";
 
 void setup() {
   size(594, 840);
@@ -122,11 +118,11 @@ void draw() {
     
     charCountInRow = rows.get(i).size();
     // Loop through characters in specific row
-    for(int j=0; j<rows.get(i).size(); j++) {
+    for(int j=0; j<charCountInRow; j++) {
       
       keyValue = (int)rows.get(i).get(j);
       
-      x = handleAlignment(j, align);
+      x = handleAlignment(j, charCountInRow, align);
       
       if(keyValue != SPACE) {
         shape(loadShape(keyValue + ".svg"), x, (i*letterSpacing)+documentPadding, letterWidth, letterWidth);
@@ -185,12 +181,12 @@ void draw() {
   changed = false;
 }
 
-public int handleAlignment(int charPos, Align align) {
+public int handleAlignment(int charPos, int charCount, Align align) {
   switch(align) {
     case RIGHT:
       return (letterWidth*charPos)+(width-(charCountInRow*letterWidth+documentPadding));
     case CENTER:
-      return 0;
+      return (width/2)+(charPos*letterWidth);
     case LEFT:
       return (letterWidth*charPos)+documentPadding;
   }
@@ -213,6 +209,7 @@ public void keyPressed() {
   ) {
     row++;
     rows.put(row, new ArrayList());
+    currentRowWidth = (charCountInRow*letterWidth/2);
   }
   
   ArrayList charsInRow = rows.get(row);
