@@ -40,11 +40,6 @@ boolean changed = true;
 
 void setup() {
   size(594, 840);
-  
-  fill(0, 102, 153);
-  textSize(20);
-  text("word", 10, 30);
-
   noStroke();
   background(255);
 
@@ -259,7 +254,7 @@ public void keyPressed() {
     charsInRow.add(keyCode);
   }
 
-  println("KEY PRESSED END - ROW " + row + " ROWS " + rows);
+  //println("KEY PRESSED END - ROW " + row + " ROWS " + rows);
 }
 
 public void save() {
