@@ -40,7 +40,6 @@ boolean changed = true;
 
 void setup() {
   size(594, 840);
-  pixelDensity(2);
   
   fill(0, 102, 153);
   textSize(20);
