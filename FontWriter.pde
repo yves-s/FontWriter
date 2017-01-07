@@ -183,8 +183,8 @@ public void keyPressed() {
     keyCode == ENTER[0] ||
     keyCode == ENTER[1] ||
     (
-    charCountInRow == maxCharsInRow &&
-    keyCode != BACKSPACE
+      charCountInRow == maxCharsInRow &&
+      keyCode != BACKSPACE
     )
     ) {
 
