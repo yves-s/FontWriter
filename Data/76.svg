@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 21.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.0" id="Ebene_3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 249.4 283.5" style="enable-background:new 0 0 249.4 283.5;" xml:space="preserve">
-<g>
-	<path d="M57.2,277.9V5h36v239.8h146v33.1H57.2z"/>
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 249.4 354.3" enable-background="new 0 0 249.4 354.3" xml:space="preserve">
+<g id="Linea_16" display="none">
+	
+		<polyline display="inline" fill="none" stroke="#000000" stroke-width="0.25" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="
+		76,252.9 76,21.5 73.6,21.5 73.6,255.1 238.1,255.1 238.1,289.1 56.7,289.1 56.7,286.9 235.8,286.9 235.8,257.4 71.2,257.4 
+		71.2,19.3 78.5,19.3 78.5,252.9 80.9,252.9 80.9,17 68.8,17 68.8,259.7 233.6,259.7 233.6,284.6 56.7,284.6 56.7,282.3 
+		231.3,282.3 231.3,261.9 66.4,261.9 66.4,14.7 83.3,14.7 83.3,252.9 85.7,252.9 85.7,12.5 63.9,12.5 63.9,264.2 229,264.2 
+		229,280.1 56.7,280.1 56.7,277.8 226.8,277.8 226.8,266.5 61.5,266.5 61.5,10.2 88.1,10.2 88.1,252.9 90.6,252.9 90.6,7.9 
+		59.1,7.9 59.1,268.7 224.5,268.7 224.5,275.5 56.7,275.5 56.7,273.3 222.2,273.3 222.2,271 56.7,271 56.7,5.7 93,5.7 93,252.9 	"/>
+</g>
+<g id="Linea_6">
+	<polyline fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="
+		78.5,248.3 78.5,19.3 71.2,19.3 71.2,255.1 238.1,255.1 238.1,289.1 56.7,289.1 56.7,282.3 231.3,282.3 231.3,261.9 63.9,261.9 
+		63.9,12.5 85.7,12.5 85.7,248.3 93,248.3 93,5.7 56.7,5.7 56.7,268.7 224.5,268.7 224.5,275.5 56.7,275.5 	"/>
 </g>
 </svg>

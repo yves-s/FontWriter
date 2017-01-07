@@ -3,19 +3,23 @@ import controlP5.*;
 import java.util.Map;
 
 ControlP5 cp5;
-RadioButton rAlign;
 Align align;
+RadioButton rAlign;
+
 
 public static final int[] ENTER = {10, 13};
 public static final int BACKSPACE = 8;
 public static final int A = 65;
 public static final int Z = 90;
+public static final int a = 97;
+public static final int z = 122;
 public static final int SPACE = 32;
 
 int maxCharsInRow;
-int letterHeight = 50;
-int oldLetterHeight = 0;
 int letterWidth = 44;
+float prop = 1.42045455;
+float letterHeight = letterWidth*prop;
+int oldLetterHeight = 0;
 int oldLetterWidth = 0;
 int documentPadding = 20;
 float letterSpacing = letterHeight+letterHeight/5;
@@ -37,6 +41,10 @@ boolean changed = true;
 void setup() {
   size(594, 840);
   pixelDensity(2);
+  
+  fill(0, 102, 153);
+  textSize(20);
+  text("word", 10, 30);
 
   noStroke();
   background(255);
@@ -47,7 +55,7 @@ void setup() {
 
   cp5.addSlider("letterWidth")
     .setPosition(10, height-30)
-    .setRange(10, 100)
+    .setRange(10, 110)
     .setSize(100, 20)
     .setValue(letterWidth)
     .setColorBackground(color(83, 83, 83))
@@ -78,7 +86,7 @@ void setup() {
 
   cp5.addButton("save")
     .setValue(0)
-    .setPosition(width - 64, height -30)
+    .setPosition(width-64, height-30)
     .setSize(54, 20)
     .setColorBackground(color(83, 83, 83))
     .setColorForeground(color(69, 69, 69))
@@ -89,51 +97,48 @@ int rowCount;
 int keyValue;
 
 void draw() {
-  if(
+  if (
     letterWidth != oldLetterWidth ||
     letterSpacing != oldLetterSpacing
-  ) {
+    ) {
     changed = true;
   }
-  
+
   // `changed` is used to avoid unnecessary drawing
   if (!changed) return;
 
   if (savePDF) {
     beginRecord(PDF, "documents/nice.pdf");
   }
-  
+
   background(255);
-  
+
   rowCount = rows.containsKey(row) ? rows.size() : 0;
   maxCharsInRow = parseInt((width-(documentPadding*2)) / letterWidth);
-  
+
   // Loop through rows
-  for(int i=0; i<rowCount; i++) {
-    
+  for (int i=0; i<rowCount; i++) {
+
     charCountInRow = rows.get(i).size();
     // Loop through characters in specific row
-    for(int j=0; j<charCountInRow; j++) {
-      
+    for (int j=0; j<charCountInRow; j++) {
+
       keyValue = (int)rows.get(i).get(j);
-      
+
       x = handleAlignment(j, charCountInRow, align);
-      
-      if(keyValue != SPACE) {
-        shape(loadShape(keyValue + ".svg"), x, (i*letterSpacing)+documentPadding, letterWidth, letterWidth);
+
+      if (keyValue != SPACE) {
+        shape(loadShape(keyValue + ".svg"), x, (i*letterSpacing)+documentPadding, letterWidth, (letterWidth*prop));
       }
-      
     }
-    
   }
 
   if (savePDF == true) {
-    
+
     endRecord();
     savePDF = false;
-    
   }
-  
+
   oldLetterSpacing = letterSpacing;
   oldLetterWidth = letterWidth;
   oldRow = row;
@@ -142,15 +147,15 @@ void draw() {
 
 public int handleAlignment(int charPos, int charCount, Align align) {
   switch(align) {
-    case RIGHT:
-      return (letterWidth*charPos)+(width-(charCountInRow*letterWidth+documentPadding));
-    case CENTER:
-      int offsetLeft = (width/2)-(charCount*(letterWidth/2));
-      return offsetLeft+(charPos*letterWidth);
-    case LEFT:
-      return (letterWidth*charPos)+documentPadding;
-    default:
-      return (letterWidth*charPos)+documentPadding; 
+  case RIGHT:
+    return (letterWidth*charPos)+(width-(charCountInRow*letterWidth+documentPadding));
+  case CENTER:
+    int offsetLeft = (width/2)-(charCount*(letterWidth/2));
+    return offsetLeft+(charPos*letterWidth);
+  case LEFT:
+    return (letterWidth*charPos)+documentPadding;
+  default:
+    return (letterWidth*charPos)+documentPadding;
   }
 }
 
@@ -158,81 +163,103 @@ public void changeAlignment(int a) {
   changed = true;
 
   if (a>0) {
-    
+
     switch(a) {
-      case 2: 
-        align = Align.CENTER;
-        break;
-      case 3:
-        align = Align.RIGHT;
-        break;
-      default:
-        align = Align.LEFT;
-        break;
+    case 2: 
+      align = Align.CENTER;
+      break;
+    case 3:
+      align = Align.RIGHT;
+      break;
+    default:
+      align = Align.LEFT;
+      break;
     }
-    
   }
 }
 
 public void keyPressed() {
-  //int keyCode = parseInt(key);
+  int keyCode = parseInt(key);
   changed = true;
 
   // New Line (Enter)
   // If Enter get's hit or char-count hits max-chars-in-row
   // increment row
-  if(
+  if (
     keyCode == ENTER[0] ||
     keyCode == ENTER[1] ||
     (
-      charCountInRow == maxCharsInRow &&
-      keyCode != BACKSPACE
+    charCountInRow == maxCharsInRow &&
+    keyCode != BACKSPACE
     )
-  ) {
-    
+    ) {
+
     row++;
     rows.put(row, new ArrayList());
     currentRowWidth = (charCountInRow*letterWidth/2);
-    
   }
-  
+
   ArrayList charsInRow = rows.get(row);
   charCountInRow = charsInRow.size();
-  
+
   // Remove Element (Backspace)
   if (keyCode == BACKSPACE) {
-    
+
     if (
       row >= 0 &&
       charCountInRow > 0
-    ) {
+      ) {
       charsInRow.remove(charCountInRow - 1);
     } else if (
       row > 0 &&
       charCountInRow == 0
-    ) {
-      
+      ) {
+
       rows.remove(row);
       row--;
-      
     }
-    
   }
   
-  // Add key to array
-  /*
-    key >= 'a' && key <= 'z'
-  */
-  if (
-    keyCode == SPACE ||
+  if(
     (
       keyCode >= A &&
       keyCode <= Z
+    ) ||
+    (
+      keyCode >= a &&
+      keyCode <= z
     )
+  ) {
+    if(
+      keyCode >= a &&
+      keyCode <= z    
+    ) {
+      keyCode -= 32;
+    }
+    charsInRow.add(keyCode);
+  }
+
+  // Add key to array
+  if (
+    keyCode == SPACE ||
+    keyCode == 44 ||
+    keyCode == 45 ||
+    keyCode == 46 ||
+    (
+      keyCode >= 48 &&
+      keyCode <= 59
+    ) ||
+    keyCode == 33 ||
+    (
+      keyCode >= 44 &&
+      keyCode <= 46
+    ) ||
+    keyCode == 63 ||
+    keyCode == 95
   ) {
     charsInRow.add(keyCode);
   }
-  
+
   println("KEY PRESSED END - ROW " + row + " ROWS " + rows);
 }
 
